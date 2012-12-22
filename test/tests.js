@@ -2413,13 +2413,21 @@ $(document).ready(function() {
 
 
 		test( "Does not trigger add / remove events for existing models on bulk assignment", function() {
+			// added jobs to person-5
 			var house = new House({
 				id: 'house-100',
 				location: 'in the middle of the street',
-				occupants: [ { id : 'person-5' }, { id : 'person-6' } ]
+				occupants: [ { id : 'person-5', jobs: [ { id : 'job-22' } ] }, { id : 'person-6' } ]
 			});
 
 			var eventsTriggered = 0;
+
+			// Should jobs trigger an add event?
+			house.get('occupants').at(0).on('add:jobs', function(model) {
+				ok( false, model.id + " should not be added" );
+				eventsTriggered++;
+			});
+
 			house
 				.bind( 'add:occupants', function(model) {
 					ok( false, model.id + " should not be added" );
